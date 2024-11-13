@@ -43,14 +43,14 @@ class BeritaController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required',
-            'author' => 'required',
-            'description' => 'required',
-            'content' => 'required',
-            'url' => 'required',
-            'url_image' => 'required',
-            'published_at' => 'required',
-            'category' => 'required',
+            'title' => 'required|string',
+            'author' => 'required|string',
+            'description' => 'required|string',
+            'content' => 'required|text',
+            'url' => 'required|url',
+            'url_image' => 'required|string',
+            'published_at' => 'required|date',
+            'category' => 'required|string',
         ]);
             if ($validator->fails()) {
                 return response()->json([
@@ -158,17 +158,53 @@ class BeritaController extends Controller
 
     public function search(Request $request) { 
         $title = $request->title; 
- 
-        $berita = Berita::where('title', 'LIKE', '%$title%')->get(); 
- 
+    
+        $berita = Berita::where('title', 'LIKE', '%' . $title . '%')->get(); 
+    
         if ($berita->isEmpty()) { 
             return response()->json([ 
                 'message' => 'Resource Not Found' 
             ], 404); 
         } else { 
             return response()->json([ 
-                'message' => 'Get Searched Resource' 
+                'message' => 'Get Searched Resource', 
+                'data' => $berita 
             ], 200); 
         } 
+    }
+    
+
+    public function sport()
+    {
+        // Mengambil berita dengan kategori 'sport'
+        $berita = Berita::where('category', 'sport')->get();
+
+        // Mengembalikan data dalam bentuk JSON
+        return response()->json([
+            'status' => 'Get Sport Resource',
+            'data' => $berita
+        ],  200);
+    }
+    public function finance()
+    {
+        // Mengambil berita dengan kategori 'finance'
+        $berita = Berita::where('category', 'finance')->get();
+
+        // Mengembalikan data dalam bentuk JSON
+        return response()->json([
+            'status' => 'Get Finance Resource',
+            'data' => $berita
+        ], 200);
+    }
+    public function automotive()
+    {
+        // Mengambil berita dengan kategori 'automotive'
+        $berita = Berita::where('category', 'automotive')->get();
+
+        // Mengembalikan data dalam bentuk JSON
+        return response()->json([
+            'status' => 'Get Automotive Resource',
+            'data' => $berita
+        ], 200);
     }
 }
